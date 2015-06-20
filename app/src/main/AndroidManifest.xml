@@ -27,7 +27,7 @@
                 <data
                         android:host="*"
                         android:pathPattern="/yeah/.*"
-                        android:scheme="http"/>
+                        android:scheme="https"/>
             </intent-filter>
 
 

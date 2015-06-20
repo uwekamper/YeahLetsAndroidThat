@@ -3,6 +3,8 @@ package org.c_base.yeahletsdothat;
 import org.c_base.yeahletsdothat.model.Campaign;
 import org.c_base.yeahletsdothat.model.PaymentInfo;
 import org.c_base.yeahletsdothat.model.Transaction;
+import org.c_base.yeahletsdothat.model.TransactionResult;
+import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -15,6 +17,6 @@ public interface YeAPI {
     @GET("/api/v1/campaigns/{id}/pay_with/{name}")
     PaymentInfo fetchPaymentInfo(@Path("id") String campaignId, @Path("name") String paymentName);
 
-    @POST("/api/v1/campaigns/{id}/transactions")
-    Campaign payWithBraintree(@Body Transaction paymentPostData, @Path("id") String paymentName);
+    @POST("/api/v1/campaigns/{id}/transactions/")
+    void payWithBraintree(@Body Transaction paymentPostData, @Path("id") String paymentName, Callback<TransactionResult> result);
 }
