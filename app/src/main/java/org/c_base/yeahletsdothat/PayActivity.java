@@ -54,15 +54,13 @@ public class PayActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
         if (getIntent() != null && getIntent().getData() != null) {
 
             final Uri data = getIntent().getData();
             final String where = data.toString();
 
             final String endpoint = data.getScheme() + "://" +  data.getHost();
-            RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL).setEndpoint(endpoint).build();
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(endpoint).build();
 
             yourUsersApi = restAdapter.create(YeAPI.class);
 
