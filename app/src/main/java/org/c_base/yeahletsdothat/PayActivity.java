@@ -94,7 +94,7 @@ public class PayActivity extends AppCompatActivity {
                         public void success(final PaymentInfo paymentInfo, final Response response) {
                             super.success(paymentInfo, response);
                             PayActivity.this.paymentInfo = paymentInfo;
-                            perkSpinner.setAdapter(new PerkAdapter(PayActivity.this, camp.perks));
+                            perkSpinner.setAdapter(new PerkAdapter(camp.perks));
                             perkSpinner.setVisibility(View.VISIBLE);
                             payButton.setVisibility(View.VISIBLE);
                         }

@@ -1,6 +1,5 @@
 package org.c_base.yeahletsdothat;
 
-import android.app.Activity;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +12,9 @@ import org.c_base.yeahletsdothat.model.Perk;
 
 class PerkAdapter extends BaseAdapter implements SpinnerAdapter {
 
-    private Activity context;
     private final List<Perk> perks;
 
-    PerkAdapter(final Activity context, final List<Perk> perks) {
-        this.context = context;
+    PerkAdapter(final List<Perk> perks) {
         this.perks = perks;
     }
 
@@ -45,7 +42,7 @@ class PerkAdapter extends BaseAdapter implements SpinnerAdapter {
 
         final TextView title = (TextView) inflate.findViewById(R.id.title);
 
-        title.setText(getItem(position).title + "("+formatAmount(getItem(position).amount)+")");
+        title.setText(getItem(position).title + "(" + formatAmount(getItem(position).amount) + ")");
 
         return inflate;
     }
@@ -71,7 +68,7 @@ class PerkAdapter extends BaseAdapter implements SpinnerAdapter {
 
     private String formatAmount(String amount) {
         final double asDouble = Double.parseDouble(amount);
-        return String.format("%.2f",asDouble) + "€";
+        return String.format("%.2f", asDouble) + "€";
 
     }
 }
