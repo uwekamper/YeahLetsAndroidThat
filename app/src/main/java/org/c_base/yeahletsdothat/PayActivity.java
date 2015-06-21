@@ -2,6 +2,7 @@ package org.c_base.yeahletsdothat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
@@ -53,18 +54,22 @@ public class PayActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL).setEndpoint("https://beta.yeahletsdothat.com/").build();
 
-        yourUsersApi = restAdapter.create(YeAPI.class);
+        final Uri data = getIntent().getData();
+        if (getIntent() != null && data != null) {
 
-        setContentView(R.layout.activity_pay);
+            final String where = data.toString();
 
-        ButterKnife.inject(this);
+            //TODO remove hardcoded URL
+            RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL).setEndpoint("https://beta.yeahletsdothat.com/").build();
 
-        webView.getSettings().setJavaScriptEnabled(true);
+            yourUsersApi = restAdapter.create(YeAPI.class);
 
-        if (getIntent() != null && getIntent().getData() != null) {
-            final String where = getIntent().getData().toString();
+            setContentView(R.layout.activity_pay);
+
+            ButterKnife.inject(this);
+
+            webView.getSettings().setJavaScriptEnabled(true);
 
             if (where.endsWith("/")) {
                 campaignId = where.substring(where.indexOf("/yeah/") + 6, where.lastIndexOf("/"));
@@ -88,7 +93,8 @@ public class PayActivity extends Activity {
                     yourUsersApi.fetchPaymentInfo(campaignId, transactionName, new LoadingToastResultCallback<PaymentInfo>(loadToast) {
                         @Override
                         public void success(final PaymentInfo paymentInfo, final Response response) {
-                            super.success(paymentInfo,response);
+                            super.success(paymentInfo, response);
+                            PayActivity.this.paymentInfo = paymentInfo;
                             perkSpinner.setAdapter(new PerkAdapter(PayActivity.this, camp.perks));
                             perkSpinner.setVisibility(View.VISIBLE);
                             payButton.setVisibility(View.VISIBLE);
