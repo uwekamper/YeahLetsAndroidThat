@@ -1,6 +1,8 @@
 package org.c_base.yeahletsdothat;
 
 import android.app.Activity;
+import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -36,13 +38,40 @@ class PerkAdapter extends BaseAdapter implements SpinnerAdapter {
 
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
-        TextView tv = new TextView(context);
-        tv.setText(getItem(position).title);
-        return tv;
+
+        final LayoutInflater from = LayoutInflater.from(parent.getContext());
+
+        final View inflate = from.inflate(R.layout.item_perk, parent, false);
+
+        final TextView title = (TextView) inflate.findViewById(R.id.title);
+
+        title.setText(getItem(position).title + "("+formatAmount(getItem(position).amount)+")");
+
+        return inflate;
     }
 
     @Override
     public View getDropDownView(final int position, final View convertView, final ViewGroup parent) {
-        return super.getDropDownView(position, convertView, parent);
+
+        final LayoutInflater from = LayoutInflater.from(parent.getContext());
+
+        final View inflate = from.inflate(R.layout.item_perk_dropdown, parent, false);
+
+        final TextView title = (TextView) inflate.findViewById(R.id.title);
+        final TextView price = (TextView) inflate.findViewById(R.id.price);
+        final TextView text = (TextView) inflate.findViewById(R.id.text);
+
+        final Perk item = getItem(position);
+        title.setText(item.title);
+        price.setText(formatAmount(item.amount) + " / " + item.available + " verfügbar");
+        text.setText(Html.fromHtml(item.text));
+
+        return inflate;
+    }
+
+    private String formatAmount(String amount) {
+        final double asDouble = Double.parseDouble(amount);
+        return String.format("%.2f",asDouble) + "€";
+
     }
 }
