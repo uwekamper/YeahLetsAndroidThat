@@ -68,7 +68,10 @@ public class PayActivity extends Activity {
 
         setContentView(R.layout.activity_pay);
 
+
         ButterKnife.inject(this);
+
+        webView.getSettings().setJavaScriptEnabled(true);
 
         if (getIntent() != null && getIntent().getData() != null) {
             final String where = getIntent().getData().toString();
