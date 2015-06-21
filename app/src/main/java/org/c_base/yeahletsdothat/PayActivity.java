@@ -8,7 +8,6 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -18,11 +17,7 @@ import org.c_base.yeahletsdothat.model.Campaign;
 import org.c_base.yeahletsdothat.model.PaymentInfo;
 import org.c_base.yeahletsdothat.model.PaymentModule;
 import org.c_base.yeahletsdothat.model.Transaction;
-import org.c_base.yeahletsdothat.model.TransactionResult;
-import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 public class PayActivity extends Activity {
 
@@ -56,10 +51,7 @@ public class PayActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setEndpoint("https://beta.yeahletsdothat.com/")
-                .build();
+        RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL).setEndpoint("https://beta.yeahletsdothat.com/").build();
 
         yourUsersApi = restAdapter.create(YeAPI.class);
 
@@ -130,29 +122,7 @@ public class PayActivity extends Activity {
                         transaction.amount = paymentAmount.getText().toString();
                         transaction.name = transactionName;
 
-                        yourUsersApi.payWithBraintree(transaction, campaignId, new Callback<TransactionResult>() {
-                                                          @Override
-                                                          public void success(final TransactionResult transactionResult, final Response response) {
-                                                              runOnUiThread(new Runnable() {
-                                                                  @Override
-                                                                  public void run() {
-                                                                      loadToast.success();
-                                                                  }
-                                                              });
-                                                          }
-
-                                                          @Override
-                                                          public void failure(final RetrofitError error) {
-                                                              runOnUiThread(new Runnable() {
-                                                                  @Override
-                                                                  public void run() {
-                                                                      loadToast.error();
-                                                                  }
-                                                              });
-                                                          }
-                                                      }
-
-                        );
+                        yourUsersApi.payWithBraintree(transaction, campaignId, new LoadingToastResultCallback(PayActivity.this, loadToast));
 
                     }
                 }).start();
@@ -160,4 +130,5 @@ public class PayActivity extends Activity {
         }
 
     }
+
 }
