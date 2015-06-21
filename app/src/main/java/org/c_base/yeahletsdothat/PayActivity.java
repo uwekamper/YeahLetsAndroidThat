@@ -55,13 +55,14 @@ public class PayActivity extends Activity {
         super.onCreate(savedInstanceState);
 
 
-        final Uri data = getIntent().getData();
-        if (getIntent() != null && data != null) {
 
+        if (getIntent() != null && getIntent().getData() != null) {
+
+            final Uri data = getIntent().getData();
             final String where = data.toString();
 
-            //TODO remove hardcoded URL
-            RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL).setEndpoint("https://beta.yeahletsdothat.com/").build();
+            final String endpoint = data.getScheme() + "://" +  data.getHost();
+            RestAdapter restAdapter = new RestAdapter.Builder().setLogLevel(RestAdapter.LogLevel.FULL).setEndpoint(endpoint).build();
 
             yourUsersApi = restAdapter.create(YeAPI.class);
 
