@@ -31,9 +31,6 @@ public class PayActivity extends Activity {
     @InjectView(R.id.webView)
     WebView webView;
 
-    @InjectView(R.id.idText)
-    TextView idText;
-
     @InjectView(R.id.perkSpinner)
     Spinner perkSpinner;
 
@@ -81,7 +78,6 @@ public class PayActivity extends Activity {
             } else {
                 campaignId = where.substring(where.indexOf("/yeah/") + 6);
             }
-            idText.setText(campaignId);
 
             final LoadToast loadToast = new LoadToast(PayActivity.this).setText("Lade Kampagne").show();
 
@@ -104,7 +100,6 @@ public class PayActivity extends Activity {
                         public void run() {
                             loadToast.success();
                             perkSpinner.setAdapter(new PerkAdapter(PayActivity.this, camp.perks));
-                            idText.setVisibility(View.VISIBLE);
                             perkSpinner.setVisibility(View.VISIBLE);
                             payButton.setVisibility(View.VISIBLE);
                         }
@@ -114,8 +109,6 @@ public class PayActivity extends Activity {
 
 
             webView.loadUrl(where + "?embedded=1");
-        } else {
-            idText.setText("NO ID");
         }
     }
 
