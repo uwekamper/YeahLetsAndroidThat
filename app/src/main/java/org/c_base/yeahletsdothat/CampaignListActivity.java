@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,7 +20,7 @@ import org.c_base.yeahletsdothat.model.Campaign;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 
-public class CampaignListActivity extends Activity {
+public class CampaignListActivity extends AppCompatActivity {
 
     public static final String ENDPOINT = "https://beta.yeahletsdothat.com";
     @InjectView(R.id.content_list)
