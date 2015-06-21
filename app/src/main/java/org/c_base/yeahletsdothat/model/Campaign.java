@@ -8,4 +8,6 @@ public class Campaign {
     public List<Perk> perks;
 
     public String title;
+    public String key;
+    public String username;
 }
