@@ -1,6 +1,5 @@
 package org.c_base.yeahletsdothat;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -60,7 +59,7 @@ public class PayActivity extends AppCompatActivity {
             final Uri data = getIntent().getData();
             final String where = data.toString();
 
-            final String endpoint = data.getScheme() + "://" +  data.getHost();
+            final String endpoint = data.getScheme() + "://" + data.getHost();
             RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(endpoint).build();
 
             yourUsersApi = restAdapter.create(YeAPI.class);
@@ -117,23 +116,22 @@ public class PayActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == BraintreePaymentActivity.RESULT_OK) {
                 final LoadToast loadToast = new LoadToast(PayActivity.this).setText("sending").show();
-                new Thread(new Runnable() {
+                final Transaction transaction = new Transaction();
+
+                transaction.payment_nonce = data.getStringExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
+                transaction.amount = paymentAmount.getText().toString();
+                transaction.name = transactionName;
+
+                yourUsersApi.payWithBraintree(transaction, campaignId, new LoadingToastResultCallback<TransactionResult>(loadToast) {
                     @Override
-                    public void run() {
-
-                        final Transaction transaction = new Transaction();
-
-                        transaction.payment_nonce = data.getStringExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
-                        transaction.amount = paymentAmount.getText().toString();
-                        transaction.name = transactionName;
-
-                        yourUsersApi.payWithBraintree(transaction, campaignId, new LoadingToastResultCallback<TransactionResult>(loadToast));
-
+                    public void success(final TransactionResult transactionResult, final Response response) {
+                        super.success(transactionResult, response);
+                        webView.reload();
                     }
-                }).start();
+                });
+
             }
         }
-
     }
 
 }
