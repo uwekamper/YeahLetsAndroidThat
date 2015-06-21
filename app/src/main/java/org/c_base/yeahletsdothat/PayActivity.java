@@ -17,7 +17,9 @@ import org.c_base.yeahletsdothat.model.Campaign;
 import org.c_base.yeahletsdothat.model.PaymentInfo;
 import org.c_base.yeahletsdothat.model.PaymentModule;
 import org.c_base.yeahletsdothat.model.Transaction;
+import org.c_base.yeahletsdothat.model.TransactionResult;
 import retrofit.RestAdapter;
+import retrofit.client.Response;
 
 public class PayActivity extends Activity {
 
@@ -57,7 +59,6 @@ public class PayActivity extends Activity {
 
         setContentView(R.layout.activity_pay);
 
-
         ButterKnife.inject(this);
 
         webView.getSettings().setJavaScriptEnabled(true);
@@ -73,32 +74,30 @@ public class PayActivity extends Activity {
 
             final LoadToast loadToast = new LoadToast(PayActivity.this).setText("Lade Kampagne").show();
 
-            new Thread(new Runnable() {
+            yourUsersApi.fetchCampaign(campaignId, new LoadingToastResultCallback<Campaign>(loadToast) {
+
                 @Override
-                public void run() {
-                    final Campaign camp = yourUsersApi.fetchCampaign(campaignId);
-
-
+                public void success(final Campaign campaign, final Response response) {
+                    final Campaign camp = campaign;
                     for (final PaymentModule payment_method : camp.payment_methods) {
                         if (payment_method.module_name.equals("yldt_braintree")) {
                             transactionName = payment_method.name;
                         }
                     }
 
-                    paymentInfo = yourUsersApi.fetchPaymentInfo(campaignId, transactionName);
-
-                    runOnUiThread(new Runnable() {
+                    yourUsersApi.fetchPaymentInfo(campaignId, transactionName, new LoadingToastResultCallback<PaymentInfo>(loadToast) {
                         @Override
-                        public void run() {
-                            loadToast.success();
+                        public void success(final PaymentInfo paymentInfo, final Response response) {
+                            super.success(paymentInfo,response);
                             perkSpinner.setAdapter(new PerkAdapter(PayActivity.this, camp.perks));
                             perkSpinner.setVisibility(View.VISIBLE);
                             payButton.setVisibility(View.VISIBLE);
                         }
                     });
-                }
-            }).start();
 
+                }
+
+            });
 
             webView.loadUrl(where + "?embedded=1");
         }
@@ -122,7 +121,7 @@ public class PayActivity extends Activity {
                         transaction.amount = paymentAmount.getText().toString();
                         transaction.name = transactionName;
 
-                        yourUsersApi.payWithBraintree(transaction, campaignId, new LoadingToastResultCallback(PayActivity.this, loadToast));
+                        yourUsersApi.payWithBraintree(transaction, campaignId, new LoadingToastResultCallback<TransactionResult>(loadToast));
 
                     }
                 }).start();
